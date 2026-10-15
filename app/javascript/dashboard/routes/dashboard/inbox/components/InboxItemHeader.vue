@@ -38,7 +38,17 @@ export default {
     return { showCustomSnoozeModal: false };
   },
   computed: {
-    ...mapGetters({ meta: 'notifications/getMeta' }),
+    ...mapGetters({
+      meta: 'notifications/getMeta',
+      currentRole: 'getCurrentRole',
+      currentUser: 'getCurrentUser',
+    }),
+    canDeleteNotification() {
+      return (
+        this.currentRole === 'administrator' ||
+        this.currentUser.type === 'SuperAdmin'
+      );
+    },
   },
   mounted() {
     emitter.on(CMD_SNOOZE_NOTIFICATION, this.onCmdSnoozeNotification);
@@ -138,6 +148,7 @@ export default {
         @click="openSnoozeNotificationModal"
       />
       <NextButton
+        v-if="canDeleteNotification"
         :label="$t('INBOX.ACTION_HEADER.DELETE')"
         icon="i-lucide-trash-2"
         slate

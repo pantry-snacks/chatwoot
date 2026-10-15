@@ -1,6 +1,8 @@
 <script setup>
 import { computed, ref, onBeforeMount } from 'vue';
 import { useI18n } from 'vue-i18n';
+import { useAdmin } from 'dashboard/composables/useAdmin';
+import { useMapGetter } from 'dashboard/composables/store';
 import { getInboxIconByType } from 'dashboard/helper/inbox';
 import { dynamicTime, shortTimestamp } from 'shared/helpers/timeHelper';
 import { useExactTimestamp } from 'shared/composables/useExactTimestamp';
@@ -33,6 +35,11 @@ const emit = defineEmits([
 const exactTimestamp = useExactTimestamp();
 
 const { t } = useI18n();
+const { isAdmin } = useAdmin();
+const currentUser = useMapGetter('getCurrentUser');
+const canDeleteNotification = computed(
+  () => isAdmin.value || currentUser.value.type === 'SuperAdmin'
+);
 
 const isContextMenuOpen = ref(false);
 const contextMenuPosition = ref({ x: null, y: null });
@@ -71,7 +78,9 @@ const menuItems = computed(() => [
     icon: isUnread.value ? 'mail' : 'mail-unread',
     label: t(`INBOX.MENU_ITEM.MARK_AS_${isUnread.value ? 'READ' : 'UNREAD'}`),
   },
-  { key: 'delete', icon: 'delete', label: t('INBOX.MENU_ITEM.DELETE') },
+  ...(canDeleteNotification.value
+    ? [{ key: 'delete', icon: 'delete', label: t('INBOX.MENU_ITEM.DELETE') }]
+    : []),
 ]);
 
 const messageClasses = computed(() => ({
