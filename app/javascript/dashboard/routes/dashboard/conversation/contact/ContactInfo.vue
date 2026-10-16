@@ -8,6 +8,7 @@ import {
 import { useExactTimestamp } from 'shared/composables/useExactTimestamp';
 import { useAdmin } from 'dashboard/composables/useAdmin';
 import ContactInfoRow from './ContactInfoRow.vue';
+import PantryclubInfo from './PantryclubInfo.vue';
 import ViewAllConversations from './ViewAllConversations.vue';
 import Avatar from 'next/avatar/Avatar.vue';
 import SocialIcons from './SocialIcons.vue';
@@ -23,6 +24,7 @@ export default {
   components: {
     NextButton,
     ContactInfoRow,
+    PantryclubInfo,
     ViewAllConversations,
     EditContact,
     Avatar,
@@ -284,6 +286,11 @@ export default {
             show-copy
             editable
             @update="value => onFieldUpdate('phone_number', value)"
+          />
+          <PantryclubInfo
+            v-if="contact.id && contact.phone_number"
+            :key="`${contact.id}-${contact.phone_number}`"
+            :contact-id="contact.id"
           />
           <ContactInfoRow
             v-if="formattedWhatsappUsername"

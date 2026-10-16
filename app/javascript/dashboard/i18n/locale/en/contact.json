@@ -1,6 +1,12 @@
 {
   "CONTACT_PANEL": {
     "NOT_AVAILABLE": "Not Available",
+    "PANTRYCLUB": {
+      "USER_ID": "PantryClub user #{id}",
+      "LATEST_ORDER": "Latest order #{id} ({status})",
+      "NO_ORDERS": "No PantryClub orders yet",
+      "NOT_REGISTERED": "No PantryClub account for this number"
+    },
     "EMAIL_ADDRESS": "Email Address",
     "PHONE_NUMBER": "Phone number",
     "WHATSAPP_USERNAME": "WhatsApp username",
