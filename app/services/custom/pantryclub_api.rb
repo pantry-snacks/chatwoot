@@ -5,7 +5,7 @@ module Custom::PantryclubApi
 
   module_function
 
-  # Returns { user_id:, latest_order_id:, latest_order_status: } or nil when no
+  # Returns { user_id:, latest_order_id:, latest_order_status:, account_types: } or nil when no
   # PantryClub user has this phone. Order fields are nil when the user never ordered.
   def customer_by_phone(phone)
     response = get('/v1/customers/by-phone', phone: phone)
@@ -14,8 +14,17 @@ module Custom::PantryclubApi
     {
       user_id: response['userId'],
       latest_order_id: response['latestOrderId'],
-      latest_order_status: response['latestOrderStatus']
+      latest_order_status: response['latestOrderStatus'],
+      account_types: response['accountTypes']
     }
+  end
+
+  # Returns the PantryClub user's "name surname", or nil when no user has this phone.
+  def customer_name_by_phone(phone)
+    response = get('/v1/customers/by-phone/name', phone: phone)
+    return if response.not_found?
+
+    response['name']
   end
 
   def get(path, query)

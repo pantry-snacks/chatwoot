@@ -5,6 +5,8 @@
       "USER_ID": "PantryClub user #{id}",
       "LATEST_ORDER": "Latest order #{id} ({status})",
       "NO_ORDERS": "No PantryClub orders yet",
+      "ACCOUNT_TYPES": "Accounts: {types}",
+      "NO_ACCOUNTS": "No active PantryClub accounts",
       "NOT_REGISTERED": "No PantryClub account for this number"
     },
     "EMAIL_ADDRESS": "Email Address",
