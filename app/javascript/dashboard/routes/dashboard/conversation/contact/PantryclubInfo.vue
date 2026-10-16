@@ -53,6 +53,16 @@ onMounted(async () => {
         <span class="i-lucide-shopping-bag flex-shrink-0 size-3.5" />
         {{ $t('CONTACT_PANEL.PANTRYCLUB.NO_ORDERS') }}
       </span>
+      <span class="flex items-center gap-2">
+        <span class="i-lucide-wallet flex-shrink-0 size-3.5" />
+        {{
+          customer.account_types.length
+            ? $t('CONTACT_PANEL.PANTRYCLUB.ACCOUNT_TYPES', {
+                types: customer.account_types.join(', '),
+              })
+            : $t('CONTACT_PANEL.PANTRYCLUB.NO_ACCOUNTS')
+        }}
+      </span>
     </template>
     <span v-else-if="isLoaded" class="flex items-center gap-2">
       <span class="i-lucide-user flex-shrink-0 size-3.5" />
