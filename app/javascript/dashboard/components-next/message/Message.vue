@@ -4,6 +4,7 @@ import { useTimeoutFn } from '@vueuse/core';
 import { provideMessageContext } from './provider.js';
 import { useTrack } from 'dashboard/composables';
 import { useMapGetter } from 'dashboard/composables/store';
+import { useAdmin } from 'dashboard/composables/useAdmin';
 import { emitter } from 'shared/helpers/mitt';
 import { useI18n } from 'vue-i18n';
 import { useRoute } from 'vue-router';
@@ -386,6 +387,8 @@ const payloadForContextMenu = computed(() => {
   };
 });
 
+const { isAdmin } = useAdmin();
+
 const contextMenuEnabledOptions = computed(() => {
   const hasText = !!props.content;
   const hasAttachments = !!(props.attachments && props.attachments.length > 0);
@@ -398,6 +401,7 @@ const contextMenuEnabledOptions = computed(() => {
   return {
     copy: hasText,
     delete:
+      isAdmin.value &&
       (hasText || hasAttachments) &&
       !isFailedOrProcessing &&
       !isMessageDeleted.value,

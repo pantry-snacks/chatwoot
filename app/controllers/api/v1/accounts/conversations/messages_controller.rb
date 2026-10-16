@@ -1,5 +1,6 @@
 class Api::V1::Accounts::Conversations::MessagesController < Api::V1::Accounts::Conversations::BaseController
   before_action :ensure_api_inbox, only: :update
+  before_action :check_admin_authorization?, only: :destroy
 
   def index
     @messages = message_finder.perform

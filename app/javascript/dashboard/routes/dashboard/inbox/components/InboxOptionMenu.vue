@@ -1,17 +1,32 @@
 <script>
+import { mapGetters } from 'vuex';
 import MenuItem from './MenuItem.vue';
 export default {
   components: {
     MenuItem,
   },
   emits: ['optionClick'],
-  data() {
-    return {
-      menuItems: [
+  computed: {
+    ...mapGetters({
+      currentRole: 'getCurrentRole',
+      currentUser: 'getCurrentUser',
+    }),
+    canDeleteNotification() {
+      return (
+        this.currentRole === 'administrator' ||
+        this.currentUser.type === 'SuperAdmin'
+      );
+    },
+    menuItems() {
+      const items = [
         {
           key: 'mark_all_read',
           label: this.$t('INBOX.MENU_ITEM.MARK_ALL_READ'),
         },
+      ];
+      if (!this.canDeleteNotification) return items;
+      return [
+        ...items,
         {
           key: 'delete_all',
           label: this.$t('INBOX.MENU_ITEM.DELETE_ALL'),
@@ -20,8 +35,8 @@ export default {
           key: 'delete_all_read',
           label: this.$t('INBOX.MENU_ITEM.DELETE_ALL_READ'),
         },
-      ],
-    };
+      ];
+    },
   },
   methods: {
     onClick(key) {
