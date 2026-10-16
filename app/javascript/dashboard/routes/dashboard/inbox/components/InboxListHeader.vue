@@ -1,4 +1,5 @@
 <script>
+import { mapGetters } from 'vuex';
 import { useAlert, useTrack } from 'dashboard/composables';
 import { INBOX_EVENTS } from 'dashboard/helper/AnalyticsHelper/events';
 
@@ -24,6 +25,18 @@ export default {
       showInboxDisplayMenu: false,
       showInboxOptionMenu: false,
     };
+  },
+  computed: {
+    ...mapGetters({
+      currentRole: 'getCurrentRole',
+      currentUser: 'getCurrentUser',
+    }),
+    canManageNotifications() {
+      return (
+        this.currentRole === 'administrator' ||
+        this.currentUser.type === 'SuperAdmin'
+      );
+    },
   },
   watch: {
     isContextMenuOpen: {
@@ -104,7 +117,7 @@ export default {
         />
       </div>
     </div>
-    <div class="relative flex items-center gap-1">
+    <div v-if="canManageNotifications" class="relative flex items-center gap-1">
       <NextButton
         icon="i-lucide-sliders-vertical"
         slate
