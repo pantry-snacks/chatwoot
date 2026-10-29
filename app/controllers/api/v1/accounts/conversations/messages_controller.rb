@@ -2,8 +2,18 @@ class Api::V1::Accounts::Conversations::MessagesController < Api::V1::Accounts::
   before_action :ensure_api_inbox, only: :update
   before_action :check_admin_authorization?, only: :destroy
 
+  SEARCH_RESULTS_LIMIT = 50
+
   def index
     @messages = message_finder.perform
+  end
+
+  def search
+    query = params.require(:q)
+    raise ActionController::ParameterMissing, :q unless query.is_a?(String)
+
+    @messages = @conversation.messages.non_activity_messages.content_matching(query)
+                             .includes(:attachments, sender: { avatar_attachment: [:blob] }).limit(SEARCH_RESULTS_LIMIT)
   end
 
   def create
