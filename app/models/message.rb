@@ -123,6 +123,7 @@ class Message < ApplicationRecord
   scope :today, -> { where("date_trunc('day', created_at) = ?", Date.current) }
   scope :not_forwarded, -> { where("(messages.content_attributes #>> '{}')::jsonb -> 'forwarded_message_id' IS NULL") }
   scope :voice_calls, -> { where(content_type: :voice_call) }
+  scope :content_matching, ->(term) { where(arel_table[:content].matches("%#{sanitize_sql_like(term)}%")) }
 
   # TODO: Get rid of default scope
   # https://stackoverflow.com/a/1834250/939299
