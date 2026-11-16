@@ -27,6 +27,8 @@ class MessageTemplates::HookExecutionService
     return false if conversation.tweet?
     # should not send for outbound messages
     return false unless message.incoming?
+    # the agent bot owns the reply while it handles the conversation, including telling the contact support is offline
+    return false if conversation.pending? && inbox.active_bot?
     # prevents sending out-of-office message if an agent has sent a message in last 5 minutes
     # ensures better UX by not interrupting active conversations at the end of business hours
     return false if conversation.messages.outgoing.where(private: false).exists?(['created_at > ?', 5.minutes.ago])
