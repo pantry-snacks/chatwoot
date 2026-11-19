@@ -315,6 +315,7 @@ Rails.application.routes.draw do
             end
           end
           resources :reporting_events, only: [:index] if ChatwootApp.enterprise?
+          get 'pantryclub/support_events', to: 'pantryclub/support_events#index'
 
           if ChatwootApp.enterprise?
             resources :calls, only: [:index]
