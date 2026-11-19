@@ -24,14 +24,15 @@ class Custom::SupportEvents
     ReportingEvent.where(account_id: @account.id, name: EVENT_NAMES)
   end
 
+  # Times come from event_end_time: when the conversation changed state. created_at is when the async listener saved the row.
   # Each conversation's events reach back to its last resolve before the range, so a query that started earlier can be rebuilt.
   def events
     @events ||= begin
-      last_resolved_at = reporting_events.where(conversation_id: conversation_ids, name: 'conversation_resolved', created_at: ...@range.begin)
-                                         .group(:conversation_id).maximum(:created_at)
-      reporting_events.where(conversation_id: conversation_ids, created_at: ...@range.end).order(:created_at)
-                      .pluck(:conversation_id, :name, :user_id, :created_at)
-                      .reject { |conversation_id, *, created_at| created_at <= last_resolved_at.fetch(conversation_id, Time.zone.at(0)) }
+      last_resolved_at = reporting_events.where(conversation_id: conversation_ids, name: 'conversation_resolved', event_end_time: ...@range.begin)
+                                         .group(:conversation_id).maximum(:event_end_time)
+      reporting_events.where(conversation_id: conversation_ids, event_end_time: ...@range.end).order(:event_end_time)
+                      .pluck(:conversation_id, :name, :user_id, :event_end_time)
+                      .reject { |conversation_id, *, at| at <= last_resolved_at.fetch(conversation_id, Time.zone.at(0)) }
     end
   end
 
@@ -45,7 +46,7 @@ class Custom::SupportEvents
   end
 
   def conversation_ids
-    @conversation_ids ||= (reporting_events.where(created_at: @range).distinct.pluck(:conversation_id) +
+    @conversation_ids ||= (reporting_events.where(event_end_time: @range).distinct.pluck(:conversation_id) +
                            agent_messages.map(&:first) + call_notes.map(&:first)).compact.uniq
   end
 
